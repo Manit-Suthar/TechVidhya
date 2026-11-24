@@ -4,16 +4,21 @@ const bodyParser = require("body-parser");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const strictPromptTemplate = require("./StrictPrompt");
 
+// Load environment variables if .env exists
+try {
+  require("dotenv").config();
+} catch (e) {}
+
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(bodyParser.json());
 
 console.log("✅ Starting backend setup...");
 
-// ⚠️ Use env variable in production
-const genAI = new GoogleGenerativeAI("AIzaSyCZGt7GAz-zAS1tPpj98px96JZsvSsGJ4k");
+const apiKey = process.env.GEMINI_API_KEY || "AIzaSyCZGt7GAz-zAS1tPpj98px96JZsvSsGJ4k";
+const genAI = new GoogleGenerativeAI(apiKey);
 
 app.post("/api/message", async (req, res) => {
   const userMessage = req.body.message;
